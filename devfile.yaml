@@ -31,13 +31,13 @@ commands:
     actions:
       - workdir: '${CHE_PROJECTS_ROOT}/todo-demo-app'
         type: exec
-        command: 'mvn quarkus:dev'
+        command: 'mvn quarkus:dev -Dquarkus.http.host=0.0.0.0'
         component: todo-application
   - name: Package for OpenShift
     actions:
       - workdir: '${CHE_PROJECTS_ROOT}/todo-demo-app'
         type: exec
-        command: 'mvn clean package'
+        command: 'mvn clean package -DskipTests'
         component: todo-application
   - name: Attach remote debugger
     actions:
