@@ -122,9 +122,9 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
+        <!-- <configuration>
           <uberJar>true</uberJar>
-        </configuration>
+        </configuration> -->
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>

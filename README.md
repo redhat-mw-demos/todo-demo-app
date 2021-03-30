@@ -37,6 +37,39 @@ docker run --ulimit memlock=-1:-1 -it --rm=true --memory-swappiness=0 \
     -p 5432:5432 postgres:10.5
 target/todo-backend-*-runner
 ```
+
+## Prometheus
+
+Copy the following Prometheus.yaml to YAML editor of ConfigMap:
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: doh-dev <1>
+data:
+  prometheus.yml: >-
+    scrape_configs:
+      - job_name: 'prometheus'
+        static_configs:
+        - targets: ['localhost:9090']
+
+      - job_name: 'todo-backend'
+        scrape_interval: 10s
+        scrape_timeout: 5s
+        static_configs:
+        - targets: ['todo-backend:8080']
+```
+
+<1> Replace with your namespace
+
+Run the following command to apply the ConfigMap:
+
+```
+oc set volume -n doh-dev deployment/prometheus --add -t configmap --configmap-name=prometheus-config -m /etc/prometheus/prometheus.yml --sub-path=prometheus.yml && \
+oc rollout status -n doh-dev -w deployment/prometheus
+```
+
 ## Other links
 
 - http://localhost:8080/health (Show the build in Health check for the datasource)

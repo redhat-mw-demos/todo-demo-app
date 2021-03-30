@@ -8,6 +8,10 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import java.util.List;
+
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
@@ -25,6 +29,8 @@ public class TodoResource {
 
     @GET
     @Operation(description = "Get all the todos")
+    @Counted(name = "getAll", description = "List all To-DO items")
+    @Timed(name = "checksTimerAll", description = "How long it takes to perform getAll()", unit = MetricUnits.MILLISECONDS)
     public List<Todo> getAll() {
         return Todo.listAll(Sort.by("order"));
     }
@@ -43,6 +49,8 @@ public class TodoResource {
     @POST
     @Transactional
     @Operation(description = "Create a new todo")
+    @Counted(name = "create", description = "Create a new To-DO item")
+    @Timed(name = "checksTimerCreate", description = "How long it takes to perform create()", unit = MetricUnits.MILLISECONDS)
     public Response create(@Valid Todo item) {
         item.persist();
         return Response.status(Status.CREATED).entity(item).build();
