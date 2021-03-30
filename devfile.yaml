@@ -1,0 +1,57 @@
+apiVersion: 1.0.0
+metadata:
+  name: todo-demo-app
+projects:
+  - name: todo-demo-app
+    source:
+      location: 'https://github.com/redhat-mw-demos/todo-demo-app.git'
+      type: git
+      branch: RHBQ-1.11
+components:
+  - id: redhat/quarkus-java11/latest
+    type: chePlugin
+  - mountSources: true
+    endpoints:
+      - name: todo-application
+        port: 8080
+    memoryLimit: 1024Mi
+    type: dockerimage
+    volumes:
+      - name: m2
+        containerPath: /home/jboss/.m2
+    alias: todo-application 
+    image: 'registry.redhat.io/codeready-workspaces/plugin-java11-rhel8:latest'
+    env:
+      - value: '-XX:+UseParallelGC -XX:MinHeapFreeRatio=10 -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Djava.security.egd=file:/dev/./urandom -Duser.home=/home/jboss'
+        name: JAVA_OPTS
+      - value: $(JAVA_OPTS)
+        name: MAVEN_OPTS
+commands:
+  - name: Start Live Coding
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/todo-demo-app'
+        type: exec
+        command: 'mvn quarkus:dev'
+        component: todo-application
+  - name: Package for OpenShift
+    actions:
+      - workdir: '${CHE_PROJECTS_ROOT}/todo-demo-app'
+        type: exec
+        command: 'mvn clean package'
+        component: todo-application
+  - name: Attach remote debugger
+    actions:
+      - referenceContent: |
+          {
+            "version": "0.2.0",
+            "configurations": [
+              {
+                "type": "java",
+                "request": "attach",
+                "name": "Attach to Remote App",
+                "hostName": "localhost",
+                "port": 5005
+              }
+            ]
+          }
+        type: vscode-launch
