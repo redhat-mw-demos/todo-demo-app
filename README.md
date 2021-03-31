@@ -46,7 +46,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: prometheus-config
-  namespace: doh-dev <1>
+  namespace: rhbq1-11-demo
 data:
   prometheus.yml: >-
     scrape_configs:
@@ -66,8 +66,8 @@ data:
 Run the following command to apply the ConfigMap:
 
 ```
-oc set volume -n doh-dev deployment/prometheus --add -t configmap --configmap-name=prometheus-config -m /etc/prometheus/prometheus.yml --sub-path=prometheus.yml && \
-oc rollout status -n doh-dev -w deployment/prometheus
+oc set volume -n rhbq1-11-demo deployment/prometheus --add -t configmap --configmap-name=prometheus-config -m /etc/prometheus/prometheus.yml --sub-path=prometheus.yml && \
+oc rollout status -n rhbq1-11-demo -w deployment/prometheus
 ```
 
 ## Other links
