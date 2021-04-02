@@ -33,7 +33,7 @@ commands:
         type: exec
         command: 'mvn quarkus:dev -Dquarkus.http.host=0.0.0.0'
         component: todo-application
-  - name: Package for OpenShift
+  - name: Deploying to OpenShift
     actions:
       - workdir: '${CHE_PROJECTS_ROOT}/todo-demo-app'
         type: exec
